@@ -1,32 +1,38 @@
-import socket, pickle, struct, cv2
+import socket
+import numpy
+import time
+import cv2
+from pprint import pprint
 
-maxLength = 65008
-structFormat = "Q"
-port = 1234
-data = b''
-frameSize = None
-payloadSize = struct.calcsize(structFormat)
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.sendto(bytes('get','utf-8'), (socket.gethostname(), port))
+HOST = "127.0.0.1"
+PORT = 999
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind((HOST, PORT))
+PACKET_SIZE = 65500
+frameCounter = 0
+
+dataBytes = b''
+
 while True:
-    while len(data) < payloadSize:
-        packet = s.recvfrom(maxLength)[0]
-        # if len(packet.decode('utf-8')) < maxLength:
-        #     print(packet.decode('utf-8'))
-        #     frameSize = int(packet.decode('utf-8'))
-        if not packet: break
-        data += packet
-    packedMsgSize = data[:payloadSize]
-    msgSize = struct.unpack(structFormat, packedMsgSize)[0]
-    data = data[payloadSize:]
-    print(packedMsgSize)
-    while len(data) < msgSize:
-        data += s.recvfrom(maxLength)[0]
-    frameData = data[:msgSize]
-    data = data[msgSize:]
-    frame = pickle.loads(frameData)
-    cv2.imshow("Receving video from server", frame)
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord('q'):
+    frameSize = None
+    data, addr = sock.recvfrom(30) # b'eframe' is 6 byte long
+    if 'frameSize' in data.decode('utf-8'):
+        frameSize = int(data.decode('utf-8').split('frameSize')[1])
+        while True:
+            sock.sendto(b'getFrameContent', addr)
+            data, addr = sock.recvfrom(PACKET_SIZE)
+            if data == b'endFrame':
+                break
+            dataBytes += data
+    if len(dataBytes) == frameSize:
+        frame = numpy.fromstring (dataBytes, dtype=numpy.uint8)
+        frame = frame.reshape (360,640, 3)
+        print(f'frame: {frameCounter}')
+        cv2.imshow('frame receiving',frame)
+        frameCounter = frameCounter + 1
+        dataBytes=b''
+        
+    if cv2.waitKey(1) & 0xFF == ord ('q'):
         break
-s.close()
+
+sock.close()

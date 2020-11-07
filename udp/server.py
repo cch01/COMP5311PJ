@@ -1,53 +1,39 @@
 import socket
-import cv2, struct
-import numpy as np
-import pickle
+import cv2
+from pprint import pprint
 
+HOST = '127.0.0.1'
+PORT = 999
+VIDEO_SOURCE = '../nature-360p.mp4'
+PACKET_SIZE = 65500
+# PACKET_DIVIDER = 20
 
+vid = cv2.VideoCapture(VIDEO_SOURCE)
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH,640)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
+def splitIn(x):
+    return iter(range(x))
 
-port = 1234
-maxLength = 65000
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.bind((socket.gethostname(), port))
-structFormat = "Q"
-print("listening at", socket.gethostname(), port)
+frameCounter = 1
 
+while (True):
+    ret, frame = vid.read()
+    print(f'frame: {frameCounter}')
+    cv2.imshow('frame sending', frame)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    flattenedFrame = frame.flatten()
+    frameBytes = flattenedFrame.tobytes()
+    sock.sendto(bytes(('frameSize'+str(len(frameBytes))).encode('utf-8')), (HOST, PORT))
+    for i in splitIn(len(frameBytes)//PACKET_SIZE + 1 if len(frameBytes)%PACKET_SIZE > 0 else 0):
+        data, addr = sock.recvfrom(15)
+        if data == b'getFrameContent':
+            sock.sendto(frameBytes[i * PACKET_SIZE: (i + 1) * (PACKET_SIZE) if (len(frameBytes) - i * PACKET_SIZE > PACKET_SIZE) else None], (HOST, PORT))
 
-def start_stream():
-    vid = cv2.VideoCapture('../nature-360p.mp4')
-    while(vid.isOpened()):
-        img, frame = vid.read()
-        cv2.imshow('Transfering', frame)
-        a = pickle.dumps(frame)
-        print(len(a))
-        while len(a) > 0:
-            # s.sendto(bytes(str(len(a)), 'utf-8'), address)
-            buffer = struct.pack(structFormat, maxLength) + a[:maxLength]
-            a = a[maxLength:]
-            print(len(buffer))
-            # if len(buffer) > 65535:
-            #     print("The message is too large to be sent within a single UDP datagram. We do not handle splitting the message in multiple datagrams")
-            #     s.sendto("FAIL".encode('utf-8'),address)
-            #     continue
-            # We send back the buffer to the client
-            
-            s.sendto(buffer, address)
+    data, addr = sock.recvfrom(15)
+    sock.sendto(b'endFrame', (HOST, PORT))
+    frameCounter = frameCounter + 1
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
-
-
-incomeData, address = s.recvfrom(4)
-incomeData = incomeData.decode('utf-8')
-print("income data", incomeData)
-print(incomeData == "get")
-if incomeData == "get":
-    while True: 
-        try:
-            start_stream()
-        except Exception as e:
-            print(f'{address} disconnected')
-            pass
-
-s.close()
-    
-
-
+vid.release()
+cv2.destroyAllWindows()

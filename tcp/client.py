@@ -1,31 +1,33 @@
 import socket, pickle, struct, cv2
 
 structFormat = "Q"
-port = 1234
+PORT = 1234
+HOST = '127.0.0.1'
 data = b''
-payloadSize = struct.calcsize(structFormat)
-print('payloadSize',payloadSize)
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((socket.gethostname(), port))
+PAYLOAD_SIZE = struct.calcsize(structFormat)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((HOST, PORT))
+frameCounter = 1
+
 while True:
-    while len(data) < payloadSize:
-        packet = s.recv(4*1024)
+    while len(data) < PAYLOAD_SIZE:
+        packet = sock.recv(4*1024)
         if not packet: break
         data += packet
-    packedMsgSize = data[:payloadSize]
-    print(payloadSize)
+    packedMsgSize = data[:PAYLOAD_SIZE]
     msgSize = struct.unpack(structFormat, packedMsgSize)[0]
-    print(msgSize)
 
-    data = data[payloadSize:]
-    
+    data = data[PAYLOAD_SIZE:]
+
     while len(data) < msgSize:
-        data += s.recv(4*1024)
+        data += sock.recv(4*1024)
     frameData = data[:msgSize]
     data = data[msgSize:]
     frame = pickle.loads(frameData)
+    print(f'frame: {frameCounter}')
     cv2.imshow("Receving video from server", frame)
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord('q'):
+    frameCounter = frameCounter + 1
+    if cv2.waitKey(1) & 0xFF == ord ('q'):
         break
-s.close()
+
+sock.close()
