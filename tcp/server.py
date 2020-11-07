@@ -25,8 +25,8 @@ def start_stream():
             frameCounter = 1
             while(vid.isOpened()):
                 img, frame = vid.read()
-                a = pickle.dumps(frame)
-                message = struct.pack(STRUCT_FORMAT, len(a)) + a
+                frameBytes = pickle.dumps(frame)
+                message = struct.pack(STRUCT_FORMAT, len(frameBytes)) + frameBytes
                 clientSocket.send(message)
                 print(f'frame: {frameCounter}')
                 cv2.imshow('Transfering', frame)
