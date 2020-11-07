@@ -40,6 +40,5 @@ def start_stream():
 while True: 
     start_stream()
 
-vid.release()
 sock.close()
 cv2.destroyAllWindows()
