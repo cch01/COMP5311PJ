@@ -4,11 +4,13 @@ from pprint import pprint
 
 HOST = '127.0.0.1'
 PORT = 999
-VIDEO_SOURCE = '../nature-360p.mp4'
+VID_360P = '../360p.mp4'
+VID_720P = '../720p.mp4'
+VID_1080P = '../1080p.mp4'
 PACKET_SIZE = 65500
 # PACKET_DIVIDER = 20
 
-vid = cv2.VideoCapture(VIDEO_SOURCE)
+vid = cv2.VideoCapture(VID_1080P)
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH,640)
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
 def splitIn(x):

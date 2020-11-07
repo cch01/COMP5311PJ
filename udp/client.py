@@ -9,6 +9,9 @@ PORT = 999
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((HOST, PORT))
 PACKET_SIZE = 65500
+VID_360P = (360, 640, 3)
+VID_720P = (720, 1280, 3)
+VID_1080P = (1080, 1920, 3)
 frameCounter = 0
 
 dataBytes = b''
@@ -26,7 +29,7 @@ while True:
             dataBytes += data
     if len(dataBytes) == frameSize:
         frame = numpy.fromstring (dataBytes, dtype=numpy.uint8)
-        frame = frame.reshape (360,640, 3)
+        frame = frame.reshape (VID_1080P)
         print(f'frame: {frameCounter}')
         cv2.imshow('frame receiving',frame)
         frameCounter = frameCounter + 1

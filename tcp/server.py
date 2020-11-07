@@ -6,6 +6,9 @@ import pickle
 PORT = 1234
 STRUCT_FORMAT = "Q"
 HOST = '127.0.0.1'
+VID_360P = '../360p.mp4'
+VID_720P = '../720p.mp4'
+VID_1080P = '../1080p.mp4'
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind((HOST, PORT))
@@ -15,7 +18,7 @@ print("listening at", HOST, PORT)
 
 def start_stream():
     clientSocket, address = sock.accept()
-    vid = cv2.VideoCapture('../nature-360p.mp4')
+    vid = cv2.VideoCapture(VID_1080P)
     try:
         print(f'client {address} connected')
         if clientSocket:
