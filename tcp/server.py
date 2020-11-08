@@ -5,7 +5,7 @@ import pickle
 
 PORT = 1234
 STRUCT_FORMAT = "Q"
-HOST = '127.0.0.1'
+HOST = 'localhost'#change to client ip
 VID_360P = '../360p.mp4'
 VID_720P = '../720p.mp4'
 VID_1080P = '../1080p.mp4'
@@ -18,7 +18,7 @@ print("listening at", HOST, PORT)
 
 def start_stream():
     clientSocket, address = sock.accept()
-    vid = cv2.VideoCapture(VID_1080P)
+    vid = cv2.VideoCapture(VID_1080P) #can change if you want
     try:
         print(f'client {address} connected')
         if clientSocket:

@@ -4,7 +4,7 @@ import time
 import cv2
 from pprint import pprint
 
-HOST = "127.0.0.1"
+HOST = "0.0.0.0"
 PORT = 999
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((HOST, PORT))
@@ -29,7 +29,7 @@ while True:
             dataBytes += data
     if len(dataBytes) == frameSize:
         frame = numpy.fromstring (dataBytes, dtype=numpy.uint8)
-        frame = frame.reshape (VID_1080P)
+        frame = frame.reshape (VID_1080P) #can change if you want
         print(f'frame: {frameCounter}')
         cv2.imshow('frame receiving',frame)
         frameCounter = frameCounter + 1
