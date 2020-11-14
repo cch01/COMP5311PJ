@@ -3,9 +3,10 @@ import cv2, struct
 import numpy as np
 import pickle
 import time
+import base64
 
 PORT = 1234
-STRUCT_FORMAT = "Q"
+STRUCT_FORMAT = "<L"
 HOST = 'localhost'#change to client ip
 VID_240P = '../240p.mp4'
 VID_360P = '../360p.mp4'
@@ -35,11 +36,12 @@ def start_stream():
                 if time_elapsed > 1/FRAME_RATE:
                     prev = time.time()
                     img, frame = vid.read()
-                    frameBytes = pickle.dumps(frame)
-                    message = struct.pack(STRUCT_FORMAT, len(frameBytes)) + frameBytes
-                    clientSocket.send(message)
+                    encoded, buffer = cv2.imencode('.jpg', frame)
+                    b_frame = base64.b64encode(buffer)
+                    message = struct.pack(STRUCT_FORMAT, len(b_frame)) + b_frame
+                    clientSocket.sendall(message)
                     print(f'frame: {frameCounter}')
-                    cv2.imshow('Transfering', frame)
+                    cv2.imshow('frame sending', frame)
                     frameCounter = frameCounter + 1
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break

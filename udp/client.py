@@ -4,6 +4,7 @@ import time
 import cv2
 from pprint import pprint
 import random
+import base64
 
 HOST = "0.0.0.0"
 PORT = 999
@@ -12,11 +13,6 @@ sock.bind((HOST, PORT))
 PACKET_SIZE = 65507
 PACKET_LOSS_RATE = 0 #10% packet loss
 
-VID_240P = (240, 426, 3)
-VID_480P = (480, 854, 3)
-VID_720P = (720, 1280, 3)
-VID_720P = (720, 1280, 3)
-VID_1080P = (1080, 1920, 3)
 frameCounter = 0
 
 dataBytes = b''
@@ -34,11 +30,12 @@ while True:
             if random.random() > PACKET_LOSS_RATE:
                 dataBytes += data
     if len(dataBytes) >= frameSize:
-        frame = numpy.fromstring (dataBytes, dtype=numpy.uint8)
+        img = base64.b64decode(dataBytes)
+        frame = numpy.fromstring (img, dtype=numpy.uint8)
         try:
-            frame = frame.reshape (VID_720P) #can change if you want
+            frame = cv2.imdecode(frame, 1)
             print(f'frame: {frameCounter}')
-            cv2.imshow('frame receiving',frame)
+            cv2.imshow('Receving video from server',frame)
             frameCounter = frameCounter + 1
         except ValueError:
             None
