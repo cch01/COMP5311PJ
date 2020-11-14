@@ -11,7 +11,7 @@ PORT = 999
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((HOST, PORT))
 PACKET_SIZE = 65507
-PACKET_LOSS_RATE = 0 #10% packet loss
+PACKET_LOSS_RATE = 0.1 #10% packet loss
 
 frameCounter = 0
 
@@ -30,16 +30,15 @@ while True:
             if random.random() > PACKET_LOSS_RATE:
                 dataBytes += data
     if len(dataBytes) >= frameSize:
-        img = base64.b64decode(dataBytes)
-        frame = numpy.fromstring (img, dtype=numpy.uint8)
         try:
+            img = base64.b64decode(dataBytes)
+            frame = numpy.fromstring (img, dtype=numpy.uint8)
             frame = cv2.imdecode(frame, 1)
             print(f'frame: {frameCounter}')
-            cv2.imshow('Receving video from server',frame)
+            cv2.imshow('frame receiving',frame)
             frameCounter = frameCounter + 1
-        except ValueError:
+        except:
             None
-            # print('incomplete frame');
         dataBytes=b''
         
     if cv2.waitKey(1) & 0xFF == ord ('q'):

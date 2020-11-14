@@ -15,7 +15,7 @@ PACKET_SIZE = 65507
 FRAME_RATE = 30
 # PACKET_DIVIDER = 20
 
-vid = cv2.VideoCapture(VID_1080P) #change to VID_XXXXP if want
+vid = cv2.VideoCapture(VID_480P) #change to VID_XXXXP if want
 def splitIn(x):
     return iter(range(x))
 
