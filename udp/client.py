@@ -10,8 +10,11 @@ PORT = 999
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((HOST, PORT))
 PACKET_SIZE = 65507
-PACKET_LOSS_RATE = 0.1 #10% packet loss
-VID_360P = (360, 640, 3)
+PACKET_LOSS_RATE = 0 #10% packet loss
+
+VID_240P = (240, 426, 3)
+VID_480P = (480, 854, 3)
+VID_720P = (720, 1280, 3)
 VID_720P = (720, 1280, 3)
 VID_1080P = (1080, 1920, 3)
 frameCounter = 0

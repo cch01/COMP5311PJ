@@ -2,7 +2,7 @@ import socket, pickle, struct, cv2
 
 structFormat = "Q"
 PORT = 1234
-HOST = '10.0.2.15' #change to server / 'localhost' if not using vm
+HOST = 'localhost' #change to server / 'localhost' if not using vm
 data = b''
 PAYLOAD_SIZE = struct.calcsize(structFormat)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
