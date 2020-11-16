@@ -5,6 +5,7 @@ import cv2
 from pprint import pprint
 import random
 import base64
+import socket.timeout as TimeoutException
 
 HOST = "0.0.0.0"
 PORT = 999
