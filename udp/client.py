@@ -24,10 +24,7 @@ while True:
         frameSize = int(data.decode('utf-8').split('frameSize')[1])
         while True:
             sock.sendto(b'getFrameContent', addr)
-            sock.settimeout(0.1)
             data, addr =  sock.recvfrom(PACKET_SIZE)
-            if data == None:
-                data = b''
             if data == b'endFrame':
                 break
             if random.random() > PACKET_LOSS_RATE:
