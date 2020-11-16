@@ -10,6 +10,7 @@ HOST = "0.0.0.0"
 PORT = 999
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((HOST, PORT))
+sock.settimeout(0.001)
 PACKET_SIZE = 65507
 PACKET_LOSS_RATE = 0.1 #10% packet loss
 
