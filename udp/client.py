@@ -25,6 +25,8 @@ while True:
         while True:
             sock.sendto(b'getFrameContent', addr)
             data, addr =  sock.recvfrom(PACKET_SIZE)
+            if data == None:
+                data = b''
             if data == b'endFrame':
                 break
             if random.random() > PACKET_LOSS_RATE:
