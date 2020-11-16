@@ -11,7 +11,7 @@ PORT = 999
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((HOST, PORT))
 PACKET_SIZE = 65507
-PACKET_LOSS_RATE = 0 #10% packet loss
+PACKET_LOSS_RATE = 0.1 #10% packet loss
 
 frameCounter = 0
 
@@ -24,14 +24,7 @@ while True:
         frameSize = int(data.decode('utf-8').split('frameSize')[1])
         while True:
             sock.sendto(b'getFrameContent', addr)
-            sock.settimeout(1)
-            try:
-                data, addr =  sock.recvfrom(PACKET_SIZE)
-            except:
-                print('timeout')
-                None
-            if data == None:
-                data = b''
+            data, addr =  sock.recvfrom(PACKET_SIZE)
             if data == b'endFrame':
                 break
             if random.random() > PACKET_LOSS_RATE:
