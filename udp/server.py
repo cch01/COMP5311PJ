@@ -1,6 +1,5 @@
 import socket
 import cv2
-from pprint import pprint
 import time
 import base64
 
@@ -13,9 +12,9 @@ VID_720P = '../720p.mp4'
 VID_1080P = '../1080p.mp4'
 PACKET_SIZE = 65507
 FRAME_RATE = 30
-# PACKET_DIVIDER = 20
 
 vid = cv2.VideoCapture(VID_480P) #change to VID_XXXXP if want
+
 def splitIn(x):
     return iter(range(x))
 

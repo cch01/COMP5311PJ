@@ -6,7 +6,7 @@ import base64
 
 PORT = 1234
 STRUCT_FORMAT = "<L"
-HOST = 'localhost' #change to client ip
+HOST = 'localhost' #change to self ip
 VID_240P = '../240p.mp4'
 VID_360P = '../360p.mp4'
 VID_480P = '../480p.mp4'

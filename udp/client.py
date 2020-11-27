@@ -1,17 +1,12 @@
-import socket
-import numpy
-import time
-import cv2
-from pprint import pprint
-import random
-import base64
+import socket, numpy, time, cv2, random, base64
 
 HOST = "0.0.0.0"
 PORT = 999
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind((HOST, PORT))
 PACKET_SIZE = 65507
 PACKET_LOSS_RATE = 0.1 #10% packet loss
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind((HOST, PORT))
 
 frameCounter = 0
 
