@@ -11,7 +11,6 @@ sock.connect((HOST, PORT))
 frameCounter = 1
 
 while True:
-    # start_time = datetime.datetime.now()
     while len(data) < PAYLOAD_SIZE:
         packet = sock.recv(4*1024)
         if not packet: break
@@ -30,9 +29,6 @@ while True:
     frame = cv2.imdecode(npimg, 1)
     print(f'frame: {frameCounter}')
     cv2.imshow("Receving video from server", frame)
-    # end_time = datetime.datetime.now()
-    # fps = 1/(end_time-start_time).total_seconds()
-    # print("Fps: ",round(fps,2))
     frameCounter = frameCounter + 1
     if cv2.waitKey(1) & 0xFF == ord ('q'):
         break
