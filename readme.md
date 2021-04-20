@@ -1,3 +1,4 @@
+### Environment
 1. ```pip install opencv-python``` / ```pip3 install opencv-python``` (may take very long time for compilation in windows)
 2. ```pip install numpy``` / ```pip3 install numpy```
 3. place video in root folder with correct resolution
